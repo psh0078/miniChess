@@ -1,0 +1,2 @@
+# miniChess
+chess in c
