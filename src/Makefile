@@ -1,6 +1,6 @@
 CC = gcc
-TARGET = board
-SRC = board.c
+TARGET = bitboard
+SRC = bitboard.c
 
 all: $(TARGET)
 

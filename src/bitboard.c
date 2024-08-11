@@ -1,46 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
-#include "board.h"
-
-// LERF mapping (a1 ==> the least significant bit)
-enum {
-  a1, b1, c1, d1, e1, f1, g1, h1,
-  a2, b2, c2, d2, e2, f2, g2, h2,
-  a3, b3, c3, d3, e3, f3, g3, h3,
-  a4, b4, c4, d4, e4, f4, g4, h4,
-  a5, b5, c5, d5, e5, f5, g5, h5,
-  a6, b6, c6, d6, e6, f6, g6, h6,
-  a7, b7, c7, d7, e7, f7, g7, h7,
-  a8, b8, c8, d8, e8, f8, g8, h8
-};
-
-enum { white, black };
-
-typedef unsigned long long U64;
-
-typedef struct
-{
-  U64 whitePawns;
-  U64 whiteRooks;
-  U64 whiteKnights;
-  U64 whiteBishops;
-  U64 whiteQueens;
-  U64 whiteKing;
-
-  U64 blackPawns;
-  U64 blackRooks;
-  U64 blackKnights;
-  U64 blackBishops;
-  U64 blackQueens;
-  U64 blackKing;
-
-  U64 allWhitePieces;
-  U64 allBlackPieces;
-  U64 allPieces;
-  U64 castling;
-  U64 sideToMove;
-} Board;
+#include "bitboard.h"
 
 void init_board(Board* board)
 {
@@ -61,22 +22,22 @@ U64 generate_pawn_moves(Board* board, int side)
     POP_LSB(pawn_square, pawns);
 
     // one-push
-    U64 push_target = is_white ? BIT(pawn_square) << 8 : BIT(pawn_square) >> 8; 
+    U64 push_target = is_white ? shift(NORTH, BIT(pawn_square)) : shift(SOUTH, BIT(pawn_square)); 
     if (!(all_pieces & push_target)) {
       pawn_moves |= push_target;
     }
     // double-push task this out of the one-push if.
     if ((is_white && (RANK_2 & BIT(pawn_square))) ||
       (!is_white && (RANK_7 & BIT(pawn_square)))) {
-      U64 double_push_target = is_white ? BIT(pawn_square) << 16 : BIT(pawn_square) >> 16;
+      U64 double_push_target = is_white ? shift(NORTH2, BIT(pawn_square)) : shift(SOUTH2, BIT(pawn_square));
       if (!(all_pieces & double_push_target)) {
         pawn_moves |= double_push_target;
       }
     } 
 
     // captures
-    U64 right_capture = is_white ? push_target << 1 : push_target >> 1;
-    U64 left_capture = is_white ? push_target >> 1 : push_target << 1;
+    U64 right_capture = is_white ? shift(EAST, push_target) : shift(WEST, push_target);
+    U64 left_capture = is_white ? shift(WEST, push_target) : shift(EAST, push_target);
     if (!(all_pieces & left_capture) && !(FILE_A & BIT(pawn_square))) {
       pawn_moves |= left_capture;
     }
@@ -113,7 +74,6 @@ int main()
   set_bit(board.whitePawns, b2);
   set_bit(board.whitePawns, h2);
   set_bit(board.blackPawns, a7);
-  set_bit(board.blackPawns, b4);
   set_bit(board.blackPawns, b7);
   init_board(&board);
   U64 pawn_moves = generate_pawn_moves(&board, white);
