@@ -32,13 +32,14 @@ U64 gen_knight_moves(Board* board, int side)
   U64 knight_moves = 0ULL;
   U64 knights = is_white ? board->whiteKnights : board->blackKnights; 
   U64 all_pieces = init_all_pieces(board);
-  U64 knight_square;
+  U64 knight_sq;
   while (knights) {
-    POP_LSB(knight_square, knights);
+    POP_LSB(knight_sq, knights);
     
     for (int i=0; i < 8; i++) {
-      int target = knight_square + knight_offset[i];
-      if (target >= 0 && target < 64 ) {
+      int target = knight_sq + knight_offset[i];
+      if (target >= 0 && target < 64 &&
+          abs((target % 8) - ((int) knight_sq % 8)) <= 2) {
         printf("%llud\n", BIT(target));
         knight_moves |= BIT(target); 
       }
@@ -117,7 +118,7 @@ int main()
   set_bit(board.blackPawns, b7);
   U64 pawn_moves = gen_pawn_moves(&board, white);
   
-  set_bit(board.whiteKnights, b2);
+  set_bit(board.whiteKnights, b7);
   U64 knight_moves = gen_knight_moves(&board, white);
   print_board(knight_moves);
 
