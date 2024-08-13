@@ -27,8 +27,6 @@
 #define FILE_G 0x4040404040404040ULL
 #define FILE_H 0x8080808080808080ULL
 
-extern U64 PawnAttacks[2][64];
-
 enum Direction {
     NORTH, SOUTH, EAST, WEST,
     NORTH_EAST, NORTH_WEST, SOUTH_EAST, SOUTH_WEST, NORTH2, SOUTH2
@@ -70,8 +68,8 @@ typedef struct
   U64 allWhitePieces;
   U64 allBlackPieces;
   U64 allPieces;
-  U64 castling;
-  U64 sideToMove;
+  
+  U64 ep;
 } Board;
 
 U64 shift(enum Direction D, U64 b) {
