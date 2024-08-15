@@ -72,6 +72,10 @@ typedef struct
   U64 ep;
 } Board;
 
+U64 pawn_moves;
+U64 knight_moves;
+U64 king_moves;
+
 U64 shift(enum Direction D, U64 b) {
   return D == NORTH         ? b << 8
        : D == SOUTH         ? b >> 8

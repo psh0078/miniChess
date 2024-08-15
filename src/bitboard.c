@@ -4,7 +4,21 @@
 #include <stdlib.h>
 #include "bitboard.h"
 
-U64 pawn_attacks[2][64];
+void print_board(U64 bitboard) 
+{
+  printf("\n");
+  for(int rank=7; rank >= 0; rank--) {
+    printf("  %d ", rank + 1);
+    for(int file=0; file < 8; file++) {
+      int square = rank * 8 + file;
+      printf(" %d", get_bit(bitboard, square) ? 1 : 0);
+    }
+    printf("\n");
+  }
+  printf("\n     a b c d e f g h\n\n");
+  printf("Bitboard: %llud\n\n", bitboard);
+}
+
 
 U64 init_all_pieces(Board* board)
 {
@@ -17,16 +31,11 @@ U64 init_all_pieces(Board* board)
   return board->allPieces = board->allWhitePieces | board->allBlackPieces; 
 }
 
-void init_leapers_attacks()
-{
- 
-}
-
 const int knight_offset[8] = {
   -17, -15, -10, -6, 6, 10, 15, 17
 };
 
-U64 gen_king_moves(Board* board, int side)
+U64 gen_king_moves(Board* board, int side) // TODO: refactor this by using shift().
 {
   bool is_white = (side == 0);
   U64 king_moves = 0ULL;
@@ -109,19 +118,23 @@ U64 gen_pawn_moves(Board* board, int side)
   return pawn_moves;
 }
 
-void print_board(U64 bitboard) 
-{
-  printf("\n");
-  for(int rank=7; rank >= 0; rank--) {
-    printf("  %d ", rank + 1);
-    for(int file=0; file < 8; file++) {
-      int square = rank * 8 + file;
-      printf(" %d", get_bit(bitboard, square) ? 1 : 0);
+void expand_moves(U64 all_moves, U64 moves[64]) {
+    for (int i = 0; i < 64; i++) {
+        if (all_moves & (1ULL << i)) {
+            moves[i] = all_moves & ~(1ULL << i);
+        } else {
+            moves[i] = 0;
+        }
     }
-    printf("\n");
-  }
-  printf("\n     a b c d e f g h\n\n");
-  printf("Bitboard: %llud\n\n", bitboard);
+}
+
+void init_leapers_attacks(Board* board, int side)
+{
+  pawn_moves = gen_pawn_moves(board, side);
+  // U64 expanded_pawn_moves[64];
+  // expand_moves(pawn_moves, expanded_pawn_moves);
+  knight_moves = gen_knight_moves(board, side);
+  king_moves = gen_king_moves(board, side);
 }
 
 int main() 
@@ -130,15 +143,11 @@ int main()
   Board board;
   memset(&board, 0, sizeof(Board));
 
-  // set_bit(board.whitePawns, a1);
-  // set_bit(board.blackPawns, b7);
-  // set_bit(board.whiteKnights, a1);
+  set_bit(board.whitePawns, a2);
+  set_bit(board.whiteKnights, g2);
   set_bit(board.whiteKing, d8);
 
-  U64 knight_moves = gen_knight_moves(&board, white);
-  U64 king_moves = gen_king_moves(&board, white);
-  U64 pawn_moves = gen_pawn_moves(&board, white);
-  print_board(king_moves);
+  init_leapers_attacks(&board ,white);
   // print_board(knight_moves);
   // print_board(pawn_moves);
 
