@@ -26,12 +26,33 @@ const int knight_offset[8] = {
   -17, -15, -10, -6, 6, 10, 15, 17
 };
 
+U64 gen_king_moves(Board* board, int side)
+{
+  bool is_white = (side == 0);
+  U64 king_moves = 0ULL;
+  U64 king = is_white ? board->whiteKing : board->blackKing;
+  U64 all_pieces = init_all_pieces(board);
+  U64 king_sq;
+  POP_LSB(king_sq, king);
+
+  if (!(all_pieces & (BIT(king_sq) >> 8))) king_moves |= (BIT(king_sq) >> 8);  
+  if (!(all_pieces & (BIT(king_sq) >> 9)) && !(FILE_H & BIT(king_sq))) king_moves |= (BIT(king_sq) >> 9);  
+  if (!(all_pieces & (BIT(king_sq) >> 7)) && !(FILE_A & BIT(king_sq))) king_moves |= (BIT(king_sq) >> 7);  
+  if (!(all_pieces & (BIT(king_sq) >> 1)) && !(FILE_H & BIT(king_sq))) king_moves |= (BIT(king_sq) >> 1);  
+  if (!(all_pieces & (BIT(king_sq) << 8))) king_moves |= (BIT(king_sq) << 8);  
+  if (!(all_pieces & (BIT(king_sq) << 9)) && !(FILE_A & BIT(king_sq))) king_moves |= (BIT(king_sq) << 9);  
+  if (!(all_pieces & (BIT(king_sq) << 7)) && !(FILE_H & BIT(king_sq))) king_moves |= (BIT(king_sq) << 7);  
+  if (!(all_pieces & (BIT(king_sq) << 1)) && !(FILE_A & BIT(king_sq))) king_moves |= (BIT(king_sq) << 1);  
+
+  return king_moves;
+}
+
 U64 gen_knight_moves(Board* board, int side)
 {
   bool is_white = (side == 0);
   U64 knight_moves = 0ULL;
   U64 knights = is_white ? board->whiteKnights : board->blackKnights; 
-  U64 all_pieces = init_all_pieces(board);
+  U64 all_pieces = init_all_pieces(board); // not being used..check if a square is occupied.
   U64 knight_sq;
   while (knights) {
     POP_LSB(knight_sq, knights);
@@ -112,15 +133,12 @@ int main()
   memset(&board, 0, sizeof(Board));
 
   set_bit(board.whitePawns, a2);
-  set_bit(board.whitePawns, b2);
-  set_bit(board.whitePawns, h2);
-  set_bit(board.blackPawns, a7);
   set_bit(board.blackPawns, b7);
-  U64 pawn_moves = gen_pawn_moves(&board, white);
-  
   set_bit(board.whiteKnights, b7);
-  U64 knight_moves = gen_knight_moves(&board, white);
-  print_board(knight_moves);
+  set_bit(board.whiteKing, d4);
+
+  U64 king_moves = gen_king_moves(&board, white);
+  print_board(king_moves);
 
   //print_board(board.whitePawns);
   //print_board(pawn_moves);
