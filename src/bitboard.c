@@ -34,15 +34,14 @@ U64 gen_king_moves(Board* board, int side)
   U64 all_pieces = init_all_pieces(board);
   U64 king_sq;
   POP_LSB(king_sq, king);
-
   if (!(all_pieces & (BIT(king_sq) >> 8))) king_moves |= (BIT(king_sq) >> 8);  
-  if (!(all_pieces & (BIT(king_sq) >> 9)) && !(FILE_H & BIT(king_sq))) king_moves |= (BIT(king_sq) >> 9);  
-  if (!(all_pieces & (BIT(king_sq) >> 7)) && !(FILE_A & BIT(king_sq))) king_moves |= (BIT(king_sq) >> 7);  
-  if (!(all_pieces & (BIT(king_sq) >> 1)) && !(FILE_H & BIT(king_sq))) king_moves |= (BIT(king_sq) >> 1);  
+  if (!(all_pieces & (BIT(king_sq) >> 9)) && !(FILE_A & BIT(king_sq)) && !(RANK_1 & BIT(king_sq))) king_moves |= (BIT(king_sq) >> 9);  
+  if (!(all_pieces & (BIT(king_sq) >> 7)) && !(FILE_H & BIT(king_sq)) && !(RANK_1 & BIT(king_sq))) king_moves |= (BIT(king_sq) >> 7);  
+  if (!(all_pieces & (BIT(king_sq) >> 1)) && !(FILE_A & BIT(king_sq))) king_moves |= (BIT(king_sq) >> 1);  
   if (!(all_pieces & (BIT(king_sq) << 8))) king_moves |= (BIT(king_sq) << 8);  
-  if (!(all_pieces & (BIT(king_sq) << 9)) && !(FILE_A & BIT(king_sq))) king_moves |= (BIT(king_sq) << 9);  
-  if (!(all_pieces & (BIT(king_sq) << 7)) && !(FILE_H & BIT(king_sq))) king_moves |= (BIT(king_sq) << 7);  
-  if (!(all_pieces & (BIT(king_sq) << 1)) && !(FILE_A & BIT(king_sq))) king_moves |= (BIT(king_sq) << 1);  
+  if (!(all_pieces & (BIT(king_sq) << 9)) && !(FILE_H & BIT(king_sq)) && !(RANK_8 & BIT(king_sq))) king_moves |= (BIT(king_sq) << 9);  
+  if (!(all_pieces & (BIT(king_sq) << 7)) && !(FILE_A & BIT(king_sq)) && !(RANK_8 & BIT(king_sq))) king_moves |= (BIT(king_sq) << 7);  
+  if (!(all_pieces & (BIT(king_sq) << 1)) && !(FILE_H & BIT(king_sq))) king_moves |= (BIT(king_sq) << 1);  
 
   return king_moves;
 }
@@ -61,7 +60,6 @@ U64 gen_knight_moves(Board* board, int side)
       int target = knight_sq + knight_offset[i];
       if (target >= 0 && target < 64 &&
           abs((target % 8) - ((int) knight_sq % 8)) <= 2) {
-        printf("%llud\n", BIT(target));
         knight_moves |= BIT(target); 
       }
     }
@@ -132,13 +130,17 @@ int main()
   Board board;
   memset(&board, 0, sizeof(Board));
 
-  set_bit(board.whitePawns, a2);
-  set_bit(board.blackPawns, b7);
-  set_bit(board.whiteKnights, b7);
-  set_bit(board.whiteKing, d4);
+  // set_bit(board.whitePawns, a1);
+  // set_bit(board.blackPawns, b7);
+  // set_bit(board.whiteKnights, a1);
+  set_bit(board.whiteKing, d8);
 
+  U64 knight_moves = gen_knight_moves(&board, white);
   U64 king_moves = gen_king_moves(&board, white);
+  U64 pawn_moves = gen_pawn_moves(&board, white);
   print_board(king_moves);
+  // print_board(knight_moves);
+  // print_board(pawn_moves);
 
   //print_board(board.whitePawns);
   //print_board(pawn_moves);
