@@ -40,17 +40,16 @@ U64 gen_king_moves(Board* board, int side) // TODO: refactor this by using shift
   bool is_white = (side == 0);
   U64 king_moves = 0ULL;
   U64 king = is_white ? board->whiteKing : board->blackKing;
-  U64 all_pieces = init_all_pieces(board);
   U64 king_sq;
   POP_LSB(king_sq, king);
-  if (!(all_pieces & (BIT(king_sq) >> 8))) king_moves |= (BIT(king_sq) >> 8);  
-  if (!(all_pieces & (BIT(king_sq) >> 9)) && !(FILE_A & BIT(king_sq)) && !(RANK_1 & BIT(king_sq))) king_moves |= (BIT(king_sq) >> 9);  
-  if (!(all_pieces & (BIT(king_sq) >> 7)) && !(FILE_H & BIT(king_sq)) && !(RANK_1 & BIT(king_sq))) king_moves |= (BIT(king_sq) >> 7);  
-  if (!(all_pieces & (BIT(king_sq) >> 1)) && !(FILE_A & BIT(king_sq))) king_moves |= (BIT(king_sq) >> 1);  
-  if (!(all_pieces & (BIT(king_sq) << 8))) king_moves |= (BIT(king_sq) << 8);  
-  if (!(all_pieces & (BIT(king_sq) << 9)) && !(FILE_H & BIT(king_sq)) && !(RANK_8 & BIT(king_sq))) king_moves |= (BIT(king_sq) << 9);  
-  if (!(all_pieces & (BIT(king_sq) << 7)) && !(FILE_A & BIT(king_sq)) && !(RANK_8 & BIT(king_sq))) king_moves |= (BIT(king_sq) << 7);  
-  if (!(all_pieces & (BIT(king_sq) << 1)) && !(FILE_H & BIT(king_sq))) king_moves |= (BIT(king_sq) << 1);  
+  if (BIT(king_sq) >> 8) king_moves |= (BIT(king_sq) >> 8);  
+  if ((BIT(king_sq) >> 9) && !(FILE_A & BIT(king_sq)) && !(RANK_1 & BIT(king_sq))) king_moves |= (BIT(king_sq) >> 9);  
+  if ((BIT(king_sq) >> 7) && !(FILE_H & BIT(king_sq)) && !(RANK_1 & BIT(king_sq))) king_moves |= (BIT(king_sq) >> 7);  
+  if ((BIT(king_sq) >> 1) && !(FILE_A & BIT(king_sq))) king_moves |= (BIT(king_sq) >> 1);  
+  if (BIT(king_sq) << 8) king_moves |= (BIT(king_sq) << 8);  
+  if ((BIT(king_sq) << 9) && !(FILE_H & BIT(king_sq)) && !(RANK_8 & BIT(king_sq))) king_moves |= (BIT(king_sq) << 9);  
+  if ((BIT(king_sq) << 7) && !(FILE_A & BIT(king_sq)) && !(RANK_8 & BIT(king_sq))) king_moves |= (BIT(king_sq) << 7);  
+  if ((BIT(king_sq) << 1) && !(FILE_H & BIT(king_sq))) king_moves |= (BIT(king_sq) << 1);  
 
   return king_moves;
 }
@@ -128,13 +127,19 @@ void expand_moves(U64 all_moves, U64 moves[64]) {
     }
 }
 
-void init_leapers_attacks(Board* board, int side)
+void init_leapers_attacks(Board* board)
 {
-  pawn_moves = gen_pawn_moves(board, side);
-  // U64 expanded_pawn_moves[64];
-  // expand_moves(pawn_moves, expanded_pawn_moves);
-  knight_moves = gen_knight_moves(board, side);
-  king_moves = gen_king_moves(board, side);
+  white_pawn_moves = gen_pawn_moves(board, white);
+  expand_moves(white_pawn_moves, white_pawn_attacks);
+
+  black_pawn_moves = gen_pawn_moves(board, black);
+  expand_moves(black_pawn_moves, black_pawn_attacks);
+
+  knight_moves = gen_knight_moves(board, white);
+  expand_moves(knight_moves, knight_attacks);
+
+  king_moves = gen_king_moves(board, white);
+  expand_moves(king_moves, king_attacks);
 }
 
 int main() 
@@ -147,10 +152,13 @@ int main()
   set_bit(board.whiteKnights, g2);
   set_bit(board.whiteKing, d8);
 
-  init_leapers_attacks(&board ,white);
+  // init_leapers_attacks(&board ,white);
   // print_board(knight_moves);
+  // pawn_moves = gen_pawn_moves(&board, white);
   // print_board(pawn_moves);
-
+  // expand_moves(pawn_moves, white_pawn_attacks);
+  king_moves = gen_king_moves(&board, white);
+  print_board(king_moves);
   //print_board(board.whitePawns);
   //print_board(pawn_moves);
   //print_board(board.blackPawns);
