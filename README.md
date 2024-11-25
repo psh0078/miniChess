@@ -1,4 +1,4 @@
 # miniChess
 chess engine in c
 
-I started this project to teach myself C
+I started this project to teach myself engine programming.
