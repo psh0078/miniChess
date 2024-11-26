@@ -21,16 +21,16 @@ void print_bitboard(Bitboard bitboard)
 }
 
 
-Bitboard init_all_pieces(Board* board)
-{
-  board->allWhitePieces = board->whitePawns | board->whiteRooks |
-                          board->whiteKnights | board->whiteBishops |
-                          board->whiteQueens | board->whiteKing;
-  board->allBlackPieces = board->blackPawns | board->blackRooks |
-                          board->blackKnights | board->blackBishops |
-                          board->blackQueens | board->blackKing;
-  return board->allPieces = board->allWhitePieces | board->allBlackPieces;
-}
+// Bitboard init_all_pieces(Board* board)
+// {
+//   board->allWhitePieces = board->whitePawns | board->whiteRooks |
+//                           board->whiteKnights | board->whiteBishops |
+//                           board->whiteQueens | board->whiteKing;
+//   board->allBlackPieces = board->blackPawns | board->blackRooks |
+//                           board->blackKnights | board->blackBishops |
+//                           board->blackQueens | board->blackKing;
+//   return board->allPieces = board->allWhitePieces | board->allBlackPieces;
+// }
 
 const int knight_offset[8] = {
   -17, -15, -10, -6, 6, 10, 15, 17
@@ -149,8 +149,8 @@ int main()
   Board board;
   memset(&board, 0, sizeof(Board));
 
-  set_bit(&board.whitePawns, a2);
-  print_bitboard(board.whitePawns);
+  set_bit(&board.pawns, a2);
+  print_bitboard(board.pawns);
   // init_leapers_attacks(&board, white);
   // print_bitboard(knight_moves);
   // pawn_moves = gen_pawn_moves(&board, white);

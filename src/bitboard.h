@@ -47,19 +47,12 @@ typedef unsigned long long Bitboard;
 
 typedef struct
 {
-  Bitboard whitePawns;
-  Bitboard whiteRooks;
-  Bitboard whiteKnights;
-  Bitboard whiteBishops;
-  Bitboard whiteQueens;
-  Bitboard whiteKing;
-
-  Bitboard blackPawns;
-  Bitboard blackRooks;
-  Bitboard blackKnights;
-  Bitboard blackBishops;
-  Bitboard blackQueens;
-  Bitboard blackKing;
+  Bitboard pawns;
+  Bitboard rooks;
+  Bitboard knights;
+  Bitboard bishops;
+  Bitboard queens;
+  Bitboard king;
 
   Bitboard allWhitePieces;
   Bitboard allBlackPieces;
