@@ -30,7 +30,7 @@
 enum Direction {
     NORTH, SOUTH, EAST, WEST,
     NORTH_EAST, NORTH_WEST, SOUTH_EAST, SOUTH_WEST, NORTH2, SOUTH2
-        
+
 };
 
 // LERF mapping (a1 ==> the least significant bit)
@@ -47,42 +47,42 @@ enum {
 
 enum { white, black };
 
-typedef unsigned long long U64;
+typedef unsigned long long Bitboard;
 
 typedef struct
 {
-  U64 whitePawns;
-  U64 whiteRooks;
-  U64 whiteKnights;
-  U64 whiteBishops;
-  U64 whiteQueens;
-  U64 whiteKing;
+  Bitboard whitePawns;
+  Bitboard whiteRooks;
+  Bitboard whiteKnights;
+  Bitboard whiteBishops;
+  Bitboard whiteQueens;
+  Bitboard whiteKing;
 
-  U64 blackPawns;
-  U64 blackRooks;
-  U64 blackKnights;
-  U64 blackBishops;
-  U64 blackQueens;
-  U64 blackKing;
+  Bitboard blackPawns;
+  Bitboard blackRooks;
+  Bitboard blackKnights;
+  Bitboard blackBishops;
+  Bitboard blackQueens;
+  Bitboard blackKing;
 
-  U64 allWhitePieces;
-  U64 allBlackPieces;
-  U64 allPieces;
-  
-  U64 ep;
+  Bitboard allWhitePieces;
+  Bitboard allBlackPieces;
+  Bitboard allPieces;
+
+  Bitboard ep;
 } Board;
 
-U64 white_pawn_moves;
-U64 black_pawn_moves;
-U64 knight_moves;
-U64 king_moves;
+Bitboard white_pawn_moves;
+Bitboard black_pawn_moves;
+Bitboard knight_moves;
+Bitboard king_moves;
 
-U64 white_pawn_attacks[64];
-U64 black_pawn_attacks[64];
-U64 knight_attacks[64];
-U64 king_attacks[64];
+Bitboard white_pawn_attacks[64];
+Bitboard black_pawn_attacks[64];
+Bitboard knight_attacks[64];
+Bitboard king_attacks[64];
 
-U64 shift(enum Direction D, U64 b) {
+Bitboard shift(enum Direction D, Bitboard b) {
   return D == NORTH         ? b << 8
        : D == SOUTH         ? b >> 8
        : D == NORTH2 ? b << 16
