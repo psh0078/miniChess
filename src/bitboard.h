@@ -1,7 +1,3 @@
-#define get_bit(bitboard, square) (bitboard & (1ULL << square))
-#define set_bit(bitboard, square) (bitboard |= (1ULL << square))
-#define clear_bit(bitboard, square) (get_bit(bitboard, square) ? (bitboard &= ~(1ULL << square)) : 0)
-
 #define BIT(sq) (1ULL << (sq))
 #define LSB(x) (__builtin_ctzll(x))
 #define MSB(x) (__builtin_clzll(x))
@@ -81,6 +77,20 @@ Bitboard white_pawn_attacks[64];
 Bitboard black_pawn_attacks[64];
 Bitboard knight_attacks[64];
 Bitboard king_attacks[64];
+
+bool get_bit(Bitboard bitboard, int square) {
+    return (bitboard & BIT(square)) != 0;
+}
+
+void set_bit(Bitboard* bitboard, int square) {
+    *bitboard |= BIT(square);
+}
+
+void clear_bit(Bitboard* bitboard, int square) {
+    if (get_bit(*bitboard, square)) {
+        *bitboard &= ~BIT(square);
+    }
+}
 
 Bitboard shift(enum Direction D, Bitboard b) {
   return D == NORTH         ? b << 8

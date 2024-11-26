@@ -1,3 +1,4 @@
+#include <complex.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
@@ -148,17 +149,15 @@ int main()
   Board board;
   memset(&board, 0, sizeof(Board));
 
-  set_bit(board.whitePawns, a2);
-  set_bit(board.whiteKnights, g2);
-  set_bit(board.whiteKing, d8);
-
-  // init_leapers_attacks(&board ,white);
+  set_bit(&board.whitePawns, a2);
+  print_bitboard(board.whitePawns);
+  // init_leapers_attacks(&board, white);
   // print_bitboard(knight_moves);
   // pawn_moves = gen_pawn_moves(&board, white);
   // print_bitboard(pawn_moves);
   // expand_moves(pawn_moves, white_pawn_attacks);
-  king_moves = gen_king_moves(&board, white);
-  print_bitboard(king_moves);
+  // king_moves = gen_king_moves(&board, white);
+  // print_bitboard(king_moves);
   //print_bitboard(board.whitePawns);
   //print_bitboard(pawn_moves);
   //print_bitboard(board.blackPawns);
