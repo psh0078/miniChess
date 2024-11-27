@@ -29,7 +29,7 @@ void print_bitboard(Bitboard bitboard)
 //   board->allBlackPieces = board->blackPawns | board->blackRooks |
 //                           board->blackKnights | board->blackBishops |
 //                           board->blackQueens | board->blackKing;
-//   return board->allPieces = board->allWhitePieces | board->allBlackPieces;
+//   return board->allWhitePieces | board->allBlackPieces;
 // }
 
 const int knight_offset[8] = {
@@ -112,35 +112,9 @@ Bitboard gen_pawn_moves(Board* board, int side)
     }
 
     // en passant
-
   }
 
   return pawn_moves;
-}
-
-void expand_moves(Bitboard all_moves, Bitboard moves[64]) {
-    for (int i = 0; i < 64; i++) {
-        if (all_moves & (1ULL << i)) {
-            moves[i] = all_moves & ~(1ULL << i);
-        } else {
-            moves[i] = 0;
-        }
-    }
-}
-
-void init_leapers_attacks(Board* board)
-{
-  white_pawn_moves = gen_pawn_moves(board, white);
-  expand_moves(white_pawn_moves, white_pawn_attacks);
-
-  black_pawn_moves = gen_pawn_moves(board, black);
-  expand_moves(black_pawn_moves, black_pawn_attacks);
-
-  knight_moves = gen_knight_moves(board, white);
-  expand_moves(knight_moves, knight_attacks);
-
-  king_moves = gen_king_moves(board, white);
-  expand_moves(king_moves, king_attacks);
 }
 
 int main()
@@ -151,15 +125,6 @@ int main()
 
   set_bit(&board.pawns, a2);
   print_bitboard(board.pawns);
-  // init_leapers_attacks(&board, white);
-  // print_bitboard(knight_moves);
-  // pawn_moves = gen_pawn_moves(&board, white);
-  // print_bitboard(pawn_moves);
-  // expand_moves(pawn_moves, white_pawn_attacks);
-  // king_moves = gen_king_moves(&board, white);
-  // print_bitboard(king_moves);
-  //print_bitboard(board.whitePawns);
-  //print_bitboard(pawn_moves);
-  //print_bitboard(board.blackPawns);
+
   return 0;
 }

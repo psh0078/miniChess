@@ -57,8 +57,6 @@ typedef struct
   Bitboard allWhitePieces;
   Bitboard allBlackPieces;
   Bitboard allPieces;
-
-  Bitboard ep;
 } Board;
 
 Bitboard white_pawn_moves;
