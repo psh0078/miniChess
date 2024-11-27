@@ -25,8 +25,7 @@
 
 enum Direction {
     NORTH, SOUTH, EAST, WEST,
-    NORTH_EAST, NORTH_WEST, SOUTH_EAST, SOUTH_WEST, NORTH2, SOUTH2
-
+    NORTH_EAST, NORTH_WEST, SOUTH_EAST, SOUTH_WEST
 };
 
 // LERF mapping (a1 ==> the least significant bit)
@@ -56,18 +55,16 @@ typedef struct
 
   Bitboard allWhitePieces;
   Bitboard allBlackPieces;
-  Bitboard allPieces;
 } Board;
 
-Bitboard white_pawn_moves;
-Bitboard black_pawn_moves;
-Bitboard knight_moves;
-Bitboard king_moves;
+typedef struct {
+  Biiboard source;
+  Bitboard target;
+} Move;
 
-Bitboard white_pawn_attacks[64];
-Bitboard black_pawn_attacks[64];
-Bitboard knight_attacks[64];
-Bitboard king_attacks[64];
+typedef struct {
+  Move moves[256];
+} MoveList;
 
 bool get_bit(Bitboard bitboard, int square) {
     return (bitboard & BIT(square)) != 0;
@@ -86,8 +83,6 @@ void clear_bit(Bitboard* bitboard, int square) {
 Bitboard shift(enum Direction D, Bitboard b) {
   return D == NORTH         ? b << 8
        : D == SOUTH         ? b >> 8
-       : D == NORTH2 ? b << 16
-       : D == SOUTH2 ? b >> 16
        : D == EAST          ? (b & ~FILE_H) << 1
        : D == WEST          ? (b & ~FILE_A) >> 1
        : D == NORTH_EAST    ? (b & ~FILE_H) << 9
