@@ -1,7 +1,8 @@
+#include <stdint.h>
+
 #define BIT(sq) (1ULL << (sq))
 #define LSB(x) (__builtin_ctzll(x))
 #define MSB(x) (__builtin_clzll(x))
-
 #define POP_LSB(b, x) b = LSB(x); x &= ~BIT(b);
 #define POP_MSB(b, x) b = MSB(x); x &= ~BIT(b);
 
@@ -24,8 +25,8 @@
 #define FILE_H 0x8080808080808080ULL
 
 enum Direction {
-    NORTH, SOUTH, EAST, WEST,
-    NORTH_EAST, NORTH_WEST, SOUTH_EAST, SOUTH_WEST
+  NORTH, SOUTH, EAST, WEST,
+  NORTH_EAST, NORTH_WEST, SOUTH_EAST, SOUTH_WEST
 };
 
 // LERF mapping (a1 ==> the least significant bit)
@@ -42,7 +43,8 @@ enum {
 
 enum { white, black };
 
-typedef unsigned long long Bitboard;
+typedef uint64_t Bitboard;
+typedef uint8_t Square;
 
 typedef struct
 {
@@ -51,33 +53,34 @@ typedef struct
   Bitboard knights;
   Bitboard bishops;
   Bitboard queens;
-  Bitboard king;
+  Bitboard kings;
 
-  Bitboard allWhitePieces;
-  Bitboard allBlackPieces;
+  Bitboard allWhites;
+  Bitboard allBlacks;
 } Board;
 
 typedef struct {
-  Biiboard source;
-  Bitboard target;
+  Square source;
+  Square target;
 } Move;
 
 typedef struct {
   Move moves[256];
+  int size;
 } MoveList;
 
 bool get_bit(Bitboard bitboard, int square) {
-    return (bitboard & BIT(square)) != 0;
+  return (bitboard & BIT(square)) != 0;
 }
 
 void set_bit(Bitboard* bitboard, int square) {
-    *bitboard |= BIT(square);
+  *bitboard |= BIT(square);
 }
 
 void clear_bit(Bitboard* bitboard, int square) {
-    if (get_bit(*bitboard, square)) {
-        *bitboard &= ~BIT(square);
-    }
+  if (get_bit(*bitboard, square)) {
+    *bitboard &= ~BIT(square);
+  }
 }
 
 Bitboard shift(enum Direction D, Bitboard b) {
