@@ -3,6 +3,33 @@
 #include <stdbool.h>
 #include <string.h>
 #include "bitboard.h"
+#include "movegen.h"
+
+bool get_bit(Bitboard bitboard, int square) {
+  return (bitboard & BIT(square)) != 0;
+}
+
+void set_bit(Bitboard* bitboard, int square) {
+  *bitboard |= BIT(square);
+}
+
+void clear_bit(Bitboard* bitboard, int square) {
+  if (get_bit(*bitboard, square)) {
+    *bitboard &= ~BIT(square);
+  }
+}
+
+Bitboard shift(enum Direction D, Bitboard b) {
+  return D == NORTH         ? b << 8
+       : D == SOUTH         ? b >> 8
+       : D == EAST          ? (b & ~FILE_H) << 1
+       : D == WEST          ? (b & ~FILE_A) >> 1
+       : D == NORTH_EAST    ? (b & ~FILE_H) << 9
+       : D == NORTH_WEST    ? (b & ~FILE_A) << 7
+       : D == SOUTH_EAST    ? (b & ~FILE_H) >> 7
+       : D == SOUTH_WEST    ? (b & ~FILE_A) >> 9
+       : 0;
+}
 
 void print_bitboard(Bitboard bitboard)
 {
@@ -25,8 +52,11 @@ int main()
   Board board;
   memset(&board, 0, sizeof(Board));
 
-  set_bit(&board.pawns, a2);
-  print_bitboard(board.pawns);
+  // set_bit(&board.pawns, a2);
+  // print_bitboard(board.pawns);
+
+  init_king_attacks();
+  print_bitboard(KING_ATTACKS[6]);
 
   return 0;
 }

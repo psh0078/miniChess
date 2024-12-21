@@ -1,3 +1,6 @@
+#ifndef BITBOARD
+#define BITBOARD
+
 #include <stdint.h>
 
 #define BIT(sq) (1ULL << (sq))
@@ -69,28 +72,9 @@ typedef struct {
   int size;
 } MoveList;
 
-bool get_bit(Bitboard bitboard, int square) {
-  return (bitboard & BIT(square)) != 0;
-}
+bool get_bit(Bitboard bitboard, int square);
+void set_bit(Bitboard* bitboard, int square);
+void clear_bit(Bitboard* bitboard, int square);
+Bitboard shift(enum Direction D, Bitboard b);
 
-void set_bit(Bitboard* bitboard, int square) {
-  *bitboard |= BIT(square);
-}
-
-void clear_bit(Bitboard* bitboard, int square) {
-  if (get_bit(*bitboard, square)) {
-    *bitboard &= ~BIT(square);
-  }
-}
-
-Bitboard shift(enum Direction D, Bitboard b) {
-  return D == NORTH         ? b << 8
-       : D == SOUTH         ? b >> 8
-       : D == EAST          ? (b & ~FILE_H) << 1
-       : D == WEST          ? (b & ~FILE_A) >> 1
-       : D == NORTH_EAST    ? (b & ~FILE_H) << 9
-       : D == NORTH_WEST    ? (b & ~FILE_A) << 7
-       : D == SOUTH_EAST    ? (b & ~FILE_H) >> 7
-       : D == SOUTH_WEST    ? (b & ~FILE_A) >> 9
-       : 0;
-}
+#endif

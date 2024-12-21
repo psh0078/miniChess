@@ -22,8 +22,29 @@ void init_king_attacks() {
         set_bit(&bb, target);
       }
     }
-
     KING_ATTACKS[sq] = bb;
+  }
+}
+
+void init_knight_attacks() {
+  const int KnightDelta[8][2] = {
+    {-2, -1}, {-2, 1}, {-1, -2}, {-1, 2},
+    {1, -2},  {1, 2},  {2, -1},  {2, 1}
+  };
+
+  for (Square sq = 0; sq < 64; sq++) {
+    Bitboard bb = 0ULL;
+    int rank = sq / 8;
+    int file = sq % 8;
+    for (int i = 0; i < 8; i++) {
+      int new_rank = rank + KnightDelta[i][0];
+      int new_file = file + KnightDelta[i][1];
+      if (new_rank >= 0 && new_rank < 8 && new_file >= 0 && new_file < 8) {
+        Square target = new_rank * 8 + new_file;
+        set_bit(&bb, target);
+      }
+    }
+    KNIGHT_ATTACKS[sq] = bb;
   }
 }
 
