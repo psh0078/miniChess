@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+
 #include "bitboard.h"
 #include "movegen.h"
 
@@ -56,7 +57,8 @@ int main()
   // print_bitboard(board.pawns);
 
   init_king_attacks();
-  print_bitboard(KING_ATTACKS[6]);
+  init_knight_attacks();
+  print_bitboard(bishopMask(21));
 
   return 0;
 }

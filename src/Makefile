@@ -1,6 +1,6 @@
 CC = gcc
 TARGET = bitboard
-SRC = bitboard.c
+SRC = bitboard.c movegen.c
 
 all: $(TARGET)
 
