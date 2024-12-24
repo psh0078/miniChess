@@ -56,9 +56,7 @@ int main()
   // set_bit(&board.pawns, a2);
   // print_bitboard(board.pawns);
 
-  init_king_attacks();
-  init_knight_attacks();
-  print_bitboard(bishopMask(21));
-
+  // init_king_attacks();
+  // init_knight_attacks();
   return 0;
 }
