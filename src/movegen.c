@@ -1,5 +1,5 @@
 // Reference: https://www.chessprogramming.org/Magic_Bitboards
-
+#include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <time.h>
@@ -184,45 +184,46 @@ Bitboard rookAttack(int square, Bitboard block) {
   return result;
 }
 
-int pop_1st_bit(uint64_t *b) {
-  if (*b == 0) {
+int pop_1st_bit(Bitboard bb) {
+  if (bb != 0) {
+    return count_bits((bb & -bb) - 1);
+  } else {
     return -1;
   }
-  int index = __builtin_ctzll(*b);
-  *b &= (*b - 1);
-  return index;
 }
 
-uint64_t index_to_uint64(int index, int bits, uint64_t m) {
-  uint64_t result = 0ULL;
-  for(int i = 0; i < bits; i++) {
-    int j = pop_1st_bit(&m);
-    if(index & (1 << i)) result |= (1ULL << j);
+uint64_t index_to_uint64(int index, int bits_in_mask, Bitboard attack_mask) {
+  uint64_t occ = 0ULL;
+  for (int count = 0; count < bits_in_mask; count++) {
+      int square = pop_1st_bit(attack_mask);
+      clear_bit(&attack_mask, square);
+      if (index & (1 << count)) {
+        occ |= (1ULL << square);
+      }
   }
-  return result;
+  return occ;
 }
 
-uint64_t findMagic(Square sq, int bishop) {
-  uint64_t b[4096], a[4096];
-  uint64_t* used = bishop ? bishop_attacks[sq] : rook_attacks[sq];
+Bitboard findMagic(Square sq, int bishop) {
+  Bitboard occ[4096], attacks[4096], used_attacks[4096];
   int i, fail;
-  const int m = bishop ? BISHOP_IDX_BITS[sq] : ROOK_IDX_BITS[sq];
   uint64_t mask = bishop ? bishopMask(sq) : rookMask(sq);
+  int m = bishop ? BISHOP_IDX_BITS[sq] : ROOK_IDX_BITS[sq];
   int n = count_bits(mask);
 
-  for(i = 0; i < (1 << n); i++) {
-    b[i] = index_to_uint64(i, n, mask);
-    a[i] = bishop ?  bishopAttack(sq, b[i]) : rookAttack(sq, b[i]);
+  for(i = 0; i < m; i++) {
+    occ[i] = index_to_uint64(i, n, mask);
+    attacks[i] = bishop ?  bishopAttack(sq, occ[i]) : rookAttack(sq, occ[i]);
   }
   for(int k = 0; k < 100000000; k++) {
     uint64_t magic = random_64bit();
     if(count_bits((mask * magic) & 0xFF00000000000000ULL) < 6) continue;
-    for(i = 0; i < 4096; i++) used[i] = 0ULL;
-    for (i = 0, fail = 0; !fail && i < (1 << n); i++) {
-      int magic_index = (int)((b[i] * magic) >> m);
-      if(used[magic_index] == 0ULL)
-        used[magic_index] = a[i];
-      else if(used[magic_index] != a[i]) fail = 1;
+    memset(used_attacks, 0ULL, sizeof(used_attacks));
+    for (i = 0, fail = 0; !fail && i < m; i++) {
+      int magic_index = (int)((occ[i] * magic) >> m);
+      if(used_attacks[magic_index] == 0ULL)
+        used_attacks[magic_index] = attacks[i];
+      else if(used_attacks[magic_index] != attacks[i]) fail = 1;
     }
     if (!fail) {
       if (bishop) {
@@ -230,12 +231,21 @@ uint64_t findMagic(Square sq, int bishop) {
         bishop_masks[sq].mask = mask;
         bishop_masks[sq].magic = magic;
         bishop_masks[sq].shift = m;
+        // printf("Bishop - Square: %d\n", sq);
+        // printf("  Mask: 0x%016llx\n", mask);
+        // printf("  Magic: 0x%016llx\n", magic);
+        // printf("  Shift: %d\n", m);
       } else {
         rook_masks[sq].ptr = rook_attacks[sq];
         rook_masks[sq].mask = mask;
         rook_masks[sq].magic = magic;
         rook_masks[sq].shift = m;
+        // printf("Rook - Square: %d\n", sq);
+        // printf("  Mask: 0x%016llx\n", mask);
+        // printf("  Magic: 0x%016llx\n", magic);
+        // printf("  Shift: %d\n", m);
       }
+      return magic;
     }
   }
   return 0ULL;
@@ -245,6 +255,7 @@ void initMagics() {
   for (int i = 0; i < 64; i++) {
     findMagic(i, 1);
   }
+
   for (int i = 0; i < 64; i++) {
     findMagic(i, 0);
   }
@@ -255,6 +266,7 @@ Bitboard get_bishop_attacks(Square sq, Bitboard occupancy) {
 	occupancy &= bishop_masks[sq].mask;
 	occupancy *=  bishop_masks[sq].magic;
 	occupancy >>= bishop_masks[sq].shift;
+	printf("Bitboard at Index %llu: 0x%016llx\n", occupancy, aptr[occupancy]);
 	return aptr[occupancy];
 }
 
@@ -264,6 +276,28 @@ Bitboard get_rook_attacks(Square sq, Bitboard occupancy) {
 	occupancy *=  rook_masks[sq].magic;
 	occupancy >>= rook_masks[sq].shift;
 	return aptr[occupancy];
+}
+
+void init_sliders_attacks(int is_bishop) {
+  for (Square square = 0; square < 64; square++) {
+    bishop_masks[square].mask = bishopMask(square);
+    rook_masks[square].mask = rookMask(square);
+    Bitboard mask = is_bishop ? bishopMask(square) : rookMask(square);
+    int bit_count = count_bits(mask);
+    int occupancy_variations = 1 << bit_count;
+
+    for (int count = 0; count < occupancy_variations; count++) {
+      if (is_bishop) {
+        Bitboard occupancy = index_to_uint64(count, bit_count, mask);
+        Bitboard magic_index = occupancy * bishop_masks[square].magic >> bishop_masks[square].shift;
+        bishop_attacks[square][magic_index] = bishopAttack(square, occupancy);
+      } else {
+        Bitboard occupancy = index_to_uint64(count, bit_count, mask);
+        Bitboard magic_index = occupancy * rook_masks[square].magic >> rook_masks[square].shift;
+        rook_attacks[square][magic_index] = rookAttack(square, occupancy);
+      }
+    }
+  }
 }
 
 void add_move(MoveList* moves, Square source, Bitboard board, Bitboard allies) {

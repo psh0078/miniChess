@@ -53,10 +53,8 @@ int main()
   Board board;
   memset(&board, 0, sizeof(Board));
 
-  // set_bit(&board.pawns, a2);
-  // print_bitboard(board.pawns);
-
-  // init_king_attacks();
-  // init_knight_attacks();
+  initMagics();
+  init_sliders_attacks(1);
+  init_sliders_attacks(0);
   return 0;
 }

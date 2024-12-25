@@ -23,3 +23,7 @@ void init_knight_attacks();
 Bitboard rookAttack(int square, Bitboard block);
 Bitboard bishopAttack(Square square, Bitboard block);
 uint64_t findMagic(Square sq, int bishop);
+void initMagics();
+void init_sliders_attacks(int is_bishop);
+Bitboard get_bishop_attacks(Square sq, Bitboard occupancy);
+Bitboard get_rook_attacks(Square sq, Bitboard occupancy);
