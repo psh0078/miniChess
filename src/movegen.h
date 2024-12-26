@@ -25,10 +25,16 @@ Bitboard rookMask(Square sq);
 Bitboard bishopMask(Square sq);
 Bitboard rookAttack(int square, Bitboard block);
 Bitboard bishopAttack(Square square, Bitboard block);
-int pop_1st_bit(Bitboard bb);
+int pop_1st_bit(Bitboard* bb);
 uint64_t index_to_uint64(int index, int bits_in_mask, Bitboard attack_mask);
+
+uint64_t xorshift64();
+void init_random();
+uint64_t random_64bit();
+
 uint64_t findMagic(Square sq, int bishop);
 void initMagics();
 void init_sliders_attacks(int is_bishop);
 Bitboard get_bishop_attacks(Square sq, Bitboard occupancy);
 Bitboard get_rook_attacks(Square sq, Bitboard occupancy);
+Bitboard get_queen_attacks(Square sq, Bitboard occupancy);

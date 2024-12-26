@@ -52,11 +52,24 @@ int main()
   printf("Bitboard board\n");
   Board board;
   memset(&board, 0, sizeof(Board));
+  initMagics();
+  init_sliders_attacks(1);
+  init_sliders_attacks(0);
 
-  print_bitboard(rookMask(d4));
-  print_bitboard(rookAttack(d4, rookMask(d4)));
-  // initMagics();
-  // init_sliders_attacks(1);
-  // init_sliders_attacks(0);
+  // Bitboard bishop_occupancy = 0ULL;
+  // set_bit(&bishop_occupancy, g7);
+  // set_bit(&bishop_occupancy, f6);
+  // set_bit(&bishop_occupancy, c5);
+  // set_bit(&bishop_occupancy, b2);
+  // set_bit(&bishop_occupancy, g1);
+  // printf("\n     Bishop occupancy\n");
+  // print_bitboard(bishop_occupancy);
+  // printf("\n     Bishop attacks\n");
+  // print_bitboard(get_bishop_attacks(d4, bishop_occupancy));
+
+  Bitboard queen_occ = 0ULL;
+  set_bit(&queen_occ, d5);
+  print_bitboard(queen_occ);
+  print_bitboard(get_queen_attacks(d4, queen_occ));
   return 0;
 }
