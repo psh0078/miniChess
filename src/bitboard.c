@@ -53,8 +53,10 @@ int main()
   Board board;
   memset(&board, 0, sizeof(Board));
 
-  initMagics();
-  init_sliders_attacks(1);
-  init_sliders_attacks(0);
+  print_bitboard(rookMask(d4));
+  print_bitboard(rookAttack(d4, rookMask(d4)));
+  // initMagics();
+  // init_sliders_attacks(1);
+  // init_sliders_attacks(0);
   return 0;
 }

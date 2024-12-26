@@ -1,4 +1,8 @@
-// Reference: https://www.chessprogramming.org/Magic_Bitboards
+/*
+Reference for magic bitboard implementation:
+- https://www.chessprogramming.org/Magic_Bitboards
+- https://github.com/maksimKorzh/chess_programming/blob/master/src/magics/magics.c#L24
+*/
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -107,81 +111,81 @@ int count_bits(Bitboard bitboard) {
 }
 
 Bitboard rookMask(Square sq) {
-  Bitboard attacks = 0ULL;
+  Bitboard bb = 0ULL;
   int f, r; // file, rank
-  int tr = sq / 8;
-  int tf = sq % 8;
+  int rank = sq / 8; // source rank
+  int file = sq % 8; // source file
 
-  for (r = tr + 1; r <= 6; r++) attacks |= (1ULL << (r * 8 + tf));
-  for (r = tr - 1; r >= 1; r--) attacks |= (1ULL << (r * 8 + tf));
-  for (f = tf + 1; f <= 6; f++) attacks |= (1ULL << (tr * 8 + f));
-  for (f = tf - 1; f >= 1; f--) attacks |= (1ULL << (tr * 8 + f));
+  for (r = rank + 1; r <= 6; r++) bb |= BIT(r * 8 + file);
+  for (r = rank - 1; r >= 1; r--) bb |= BIT(r * 8 + file);
+  for (f = file + 1; f <= 6; f++) bb |= BIT(rank * 8 + f);
+  for (f = file - 1; f >= 1; f--) bb |= BIT(rank * 8 + f);
 
-  return attacks;
+  return bb;
 }
 
 Bitboard bishopMask(Square sq) {
-  Bitboard attacks = 0ULL;
+  Bitboard bb = 0ULL;
   int f, r; // file, rank
-  int tr = sq / 8;
-  int tf = sq % 8;
+  int rank = sq / 8;
+  int file = sq % 8;
 
-  for (r = tr + 1, f = tf + 1; r <= 6 && f <= 6; r++, f++) attacks |= (1ULL << (r * 8 + f));
-  for (r = tr + 1, f = tf - 1; r <= 6 && f >= 1; r++, f--) attacks |= (1ULL << (r * 8 + f));
-  for (r = tr - 1, f = tf + 1; r >= 1 && f <= 6; r--, f++) attacks |= (1ULL << (r * 8 + f));
-  for (r = tr - 1, f = tf - 1; r >= 1 && f >= 1; r--, f--) attacks |= (1ULL << (r * 8 + f));
+  for (r = rank + 1, f = file + 1; r <= 6 && f <= 6; r++, f++) bb |= BIT(r * 8 + f);
+  for (r = rank + 1, f = file - 1; r <= 6 && f >= 1; r++, f--) bb |= BIT(r * 8 + f);
+  for (r = rank - 1, f = file + 1; r >= 1 && f <= 6; r--, f++) bb |= BIT(r * 8 + f);
+  for (r = rank - 1, f = file - 1; r >= 1 && f >= 1; r--, f--) bb |= BIT(r * 8 + f);
 
-  return attacks;
+  return bb;
 }
 
 Bitboard bishopAttack(Square square, Bitboard block) {
-  Bitboard result = 0ULL;
+  Bitboard attacks = 0ULL;
   int f, r; // file, rank
-  int tr = square / 8;
-  int tf = square % 8;
+  int rank = square / 8;
+  int file = square % 8;
 
-  for (r = tr + 1, f = tf + 1; r <= 7 && f <= 7; r++, f++) {
-    result |= (1ULL << (r * 8 + f));
-    if (block & (1ULL << (r * 8 + f))) break;
+  for (r = rank + 1, f = file + 1; r <= 7 && f <= 7; r++, f++) {
+    attacks |= BIT(r * 8 + f);
+    if (block & BIT(r * 8 + f)) break;
   }
-  for (r = tr + 1, f = tf - 1; r <= 7 && f >= 0; r++, f--) {
-    result |= (1ULL << (r * 8 + f));
-    if (block & (1ULL << (r * 8 + f))) break;
+  for (r = rank + 1, f = file - 1; r <= 7 && f >= 0; r++, f--) {
+    attacks |= BIT(r * 8 + f);
+    if (block & BIT(r * 8 + f)) break;
   }
-  for (r = tr - 1, f = tf + 1; r >= 0 && f <= 7; r--, f++) {
-    result |= (1ULL << (r * 8 + f));
-    if (block & (1ULL << (r * 8 + f))) break;
+  for (r = rank - 1, f = file + 1; r >= 0 && f <= 7; r--, f++) {
+    attacks |= BIT(r * 8 + f);
+    if (block & BIT(r * 8 + f)) break;
   }
-  for (r = tr - 1, f = tf - 1; r >= 0 && f >= 0; r--, f--) {
-    result |= (1ULL << (r * 8 + f));
-    if (block & (1ULL << (r * 8 + f))) break;
+  for (r = rank - 1, f = file - 1; r >= 0 && f >= 0; r--, f--) {
+    attacks |= BIT(r * 8 + f);
+    if (block & BIT(r * 8 + f)) break;
   }
-  return result;
+  return attacks;
 }
 
 Bitboard rookAttack(int square, Bitboard block) {
-  Bitboard result = 0ULL;
+  Bitboard attacks = 0ULL;
   int f, r;
-  int tr = square / 8;
-  int tf = square % 8;
+  int rank = square / 8;
+  int file = square % 8;
 
-  for (r = tr + 1; r <= 7; r++) {
-    result |= (1ULL << (r * 8 + tf));
-    if (block & (1ULL << (r * 8 + tf))) break;
+  for (r = rank + 1; r <= 7; r++) {
+    attacks |= BIT(r * 8 + file);
+    if (block & BIT(r * 8 + file)) break;
   }
-  for (r = tr - 1; r >= 0; r--) {
-    result |= (1ULL << (r * 8 + tf));
-    if (block & (1ULL << (r * 8 + tf))) break;
+  for (r = rank - 1; r >= 0; r--) {
+    attacks |= BIT(r * 8 + file);
+    if (block & BIT(r * 8 + file)) break;
   }
-  for (f = tf + 1; f <= 7; f++) {
-    result |= (1ULL << (tr * 8 + f));
-    if (block & (1ULL << (tr * 8 + f))) break;
+  for (f = file + 1; f <= 7; f++) {
+    attacks |= BIT(rank * 8 + f);
+    if (block & BIT(rank * 8 + f)) break;
   }
-  for (f = tf - 1; f >= 0; f--) {
-    result |= (1ULL << (tr * 8 + f));
-    if (block & (1ULL << (tr * 8 + f))) break;
+  for (f = file - 1; f >= 0; f--) {
+    attacks |= BIT(rank * 8 + f);
+    if (block & BIT(rank * 8 + f)) break;
   }
-  return result;
+  return attacks;
 }
 
 int pop_1st_bit(Bitboard bb) {
@@ -198,7 +202,7 @@ uint64_t index_to_uint64(int index, int bits_in_mask, Bitboard attack_mask) {
       int square = pop_1st_bit(attack_mask);
       clear_bit(&attack_mask, square);
       if (index & (1 << count)) {
-        occ |= (1ULL << square);
+        occ |= BIT(square);
       }
   }
   return occ;

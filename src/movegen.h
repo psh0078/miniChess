@@ -16,12 +16,17 @@ SMagic rook_masks[64];
 uint64_t bishop_attacks[64][4096];
 uint64_t rook_attacks[64][4096];
 
-Bitboard rookMask(Square sq);
-Bitboard bishopMask(Square sq);
+// leapers
 void init_king_attacks();
 void init_knight_attacks();
+
+// sliders (magic)
+Bitboard rookMask(Square sq);
+Bitboard bishopMask(Square sq);
 Bitboard rookAttack(int square, Bitboard block);
 Bitboard bishopAttack(Square square, Bitboard block);
+int pop_1st_bit(Bitboard bb);
+uint64_t index_to_uint64(int index, int bits_in_mask, Bitboard attack_mask);
 uint64_t findMagic(Square sq, int bishop);
 void initMagics();
 void init_sliders_attacks(int is_bishop);
