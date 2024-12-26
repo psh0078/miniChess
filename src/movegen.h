@@ -26,7 +26,7 @@ Bitboard bishopMask(Square sq);
 Bitboard rookAttack(int square, Bitboard block);
 Bitboard bishopAttack(Square square, Bitboard block);
 int pop_1st_bit(Bitboard* bb);
-uint64_t index_to_uint64(int index, int bits_in_mask, Bitboard attack_mask);
+uint64_t set_occupancy(int index, int bits_in_mask, Bitboard attack_mask);
 
 uint64_t xorshift64();
 void init_random();
