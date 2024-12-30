@@ -103,7 +103,7 @@ Bitboard pawnAttacks(Square sq, int side) {
   return attacks;
 }
 
-void init_leapers() {
+void init_leapers_attacks() {
   init_pawn_attacks();
   init_king_attacks();
   init_knight_attacks();
@@ -326,21 +326,20 @@ void init_sliders_attacks(int is_bishop) {
   }
 }
 
-void make_move(MoveList* moves, Square source, Bitboard board, Bitboard allies) {
-  clear_bit(&board, allies);
-  while (board) {
-    Square target = __builtin_ctzll(board);
-
-    moves->moves[moves->size].source = source;
-    moves->moves[moves->size].target = target;
-    moves->size++;
-
-    board &= board - 1;
-  }
+void add_move(MoveList* moves, Square source, Square target) {
+  moves->moves[moves->size].source = source;
+  moves->moves[moves->size].target = target;
+  moves->size++;
 }
 
-// MoveList generate_moves(Board* board) {
-//   MoveList result = {0};
-//   insert_king_moves(board, &result);
-//   return result;
-// }
+void insert_king_moves(MoveList* moves, Bitboard allies) {
+  while (allies) {  
+    Square source = __builtin_ctzll(allies);
+    Bitboard king_attacks = KING_ATTACKS[source];
+    while (king_attacks){
+      add_move(moves, source, __builtin_ctzll(king_attacks));
+      clear_bit(&king_attacks, 1);
+    }
+    clear_bit(&allies, 1);
+  }
+}

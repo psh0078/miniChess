@@ -55,13 +55,13 @@ int main()
   initMagics();
   init_sliders_attacks(1);
   init_sliders_attacks(0);
-  init_leapers();
+  init_leapers_attacks();
 
   //Bitboard pawn_occ = 0ULL;
   //set_bit(&pawn_occ, d3);
   //set_bit(&pawn_occ, e4);
   //print_bitboard(pawn_occ);
-  print_bitboard(PAWN_ATTACKS[white][a3]);
+  //print_bitboard(PAWN_ATTACKS[black][a3]);
 
   // Bitboard bishop_occupancy = 0ULL;
   // set_bit(&bishop_occupancy, g7);

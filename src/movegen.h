@@ -22,7 +22,7 @@ void init_king_attacks();
 void init_knight_attacks();
 void init_pawn_moves();
 Bitboard pawnAttacks(Square sq, int side);
-void init_leapers();
+void init_leapers_attacks();
 
 // sliders (magic)
 Bitboard rookMask(Square sq);
@@ -43,4 +43,13 @@ Bitboard get_bishop_attacks(Square sq, Bitboard occupancy);
 Bitboard get_rook_attacks(Square sq, Bitboard occupancy);
 Bitboard get_queen_attacks(Square sq, Bitboard occupancy);
 
-void make_move(MoveList* moves, Square source, Bitboard board, Bitboard allies);
+// add all the possible moves from a square to a MoveList
+void add_move(MoveList* moves, Square source, Square target);
+void insert_king_moves(MoveList* moves, Bitboard allies);
+void generate_moves(MoveList* moves);
+
+// MoveList generate_moves(Board* board) {
+//   MoveList result = {0};
+//   insert_king_moves(board, &result);
+//   return result;
+// }
