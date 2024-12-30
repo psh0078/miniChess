@@ -29,12 +29,7 @@ Bitboard rookMask(Square sq);
 Bitboard bishopMask(Square sq);
 Bitboard rookAttack(int square, Bitboard block);
 Bitboard bishopAttack(Square square, Bitboard block);
-int pop_1st_bit(Bitboard* bb);
 uint64_t set_occupancy(int index, int bits_in_mask, Bitboard attack_mask);
-
-uint64_t xorshift64();
-void init_random();
-uint64_t random_64bit();
 
 uint64_t findMagic(Square sq, int bishop);
 void initMagics();
@@ -46,6 +41,7 @@ Bitboard get_queen_attacks(Square sq, Bitboard occupancy);
 // add all the possible moves from a square to a MoveList
 void add_move(MoveList* moves, Square source, Square target);
 void insert_king_moves(MoveList* moves, Bitboard allies);
+void make_move(Move move, Board* board);
 void generate_moves(MoveList* moves);
 
 // MoveList generate_moves(Board* board) {

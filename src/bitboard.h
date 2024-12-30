@@ -1,13 +1,14 @@
-#ifndef BITBOARD
-#define BITBOARD
+#ifndef BITBOARD_H
+#define BITBOARD_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #define BIT(sq) (1ULL << (sq))
 #define LSB(x) (__builtin_ctzll(x))
-#define MSB(x) (__builtin_clzll(x))
-#define POP_LSB(b, x) b = LSB(x); x &= ~BIT(b);
-#define POP_MSB(b, x) b = MSB(x); x &= ~BIT(b);
+#define MSB(x) (63 ^ __builtin_clzll(x))
+#define POP_LSB(b, x) b = LSB(x); x &= ~BIT(b)
+#define POP_MSB(b, x) b = MSB(x); x &= ~BIT(b)
 
 #define RANK_1 0x00000000000000ffULL
 #define RANK_2 0x000000000000ff00ULL
@@ -44,27 +45,26 @@ enum {
   a8, b8, c8, d8, e8, f8, g8, h8
 };
 
-enum { white, black };
+enum { white, black, both};
 
 typedef uint64_t Bitboard;
 typedef uint8_t Square;
 
-typedef struct
-{
-  Bitboard pawns;
-  Bitboard rooks;
-  Bitboard knights;
-  Bitboard bishops;
-  Bitboard queens;
-  Bitboard kings;
+typedef struct {
+  int stm;
+  int xstm;
+  Bitboard bitboards[12];
+  Bitboard occupancies[3];
+  Bitboard pieces[12];
 
-  Bitboard allWhites;
-  Bitboard allBlacks;
+  int castling;
+  int enpassant;
 } Board;
 
 typedef struct {
   Square source;
   Square target;
+  // flags
 } Move;
 
 typedef struct {
@@ -72,9 +72,27 @@ typedef struct {
   int size;
 } MoveList;
 
+enum {
+  WHITE_PAWN,
+  BLACK_PAWN,
+  WHITE_KNIGHT,
+  BLACK_KNIGHT,
+  WHITE_BISHOP,
+  BLACK_BISHOP,
+  WHITE_ROOK,
+  BLACK_ROOK,
+  WHITE_QUEEN,
+  BLACK_QUEEN,
+  WHITE_KING,
+  BLACK_KING
+};
+
+extern const int CHAR_TO_PIECE[]; 
+
 bool get_bit(Bitboard bitboard, int square);
 void set_bit(Bitboard* bitboard, int square);
 void clear_bit(Bitboard* bitboard, int square);
+int pop_1st_bit(Bitboard* bb);
 Bitboard shift(enum Direction D, Bitboard b);
 
 #endif

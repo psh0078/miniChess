@@ -6,11 +6,11 @@ Reference for magic bitboard implementation:
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <time.h>
 #include <string.h>
 
 #include "movegen.h"
 #include "bitboard.h"
+#include "random.h"
 
 int BISHOP_IDX_BITS[64] = {
     58, 59, 59, 59, 59, 59, 59, 58,
@@ -109,24 +109,6 @@ void init_leapers_attacks() {
   init_knight_attacks();
 }
 
-uint64_t xorshift64_state = 2304978537;
-
-uint64_t xorshift64() {
-  uint64_t x = xorshift64_state;
-  x ^= x << 13;
-  x ^= x >> 7;
-  x ^= x << 17;
-  return xorshift64_state = x;
-}
-
-void init_random() {
-  xorshift64_state = time(NULL);
-}
-
-uint64_t random_64bit() {
-  return xorshift64() & xorshift64() & xorshift64() & xorshift64();
-}
-
 // count bits (Brian Kernighan's way)
 int count_bits(Bitboard bitboard) {
   int count = 0;
@@ -214,13 +196,6 @@ Bitboard rookAttack(int square, Bitboard block) {
     if (block & BIT(rank * 8 + f)) break;
   }
   return attacks;
-}
-
-int pop_1st_bit(Bitboard* bb) {
-  if (*bb == 0) return -1;
-  int index = __builtin_ctzll(*bb);
-  *bb &= (*bb - 1);
-  return index;
 }
 
 uint64_t set_occupancy(int index, int bits_in_mask, Bitboard attack_mask) {

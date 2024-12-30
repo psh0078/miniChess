@@ -6,6 +6,21 @@
 #include "bitboard.h"
 #include "movegen.h"
 
+const int CHAR_TO_PIECE[] = {
+  ['P'] = WHITE_PAWN,   //
+  ['N'] = WHITE_KNIGHT, //
+  ['B'] = WHITE_BISHOP, //
+  ['R'] = WHITE_ROOK,   //
+  ['Q'] = WHITE_QUEEN,  //
+  ['K'] = WHITE_KING,   //
+  ['p'] = BLACK_PAWN,   //
+  ['n'] = BLACK_KNIGHT, //
+  ['b'] = BLACK_BISHOP, //
+  ['r'] = BLACK_ROOK,   //
+  ['q'] = BLACK_QUEEN,  //
+  ['k'] = BLACK_KING,   //
+};
+
 bool get_bit(Bitboard bitboard, int square) {
   return (bitboard & BIT(square)) != 0;
 }
@@ -20,6 +35,12 @@ void clear_bit(Bitboard* bitboard, int square) {
   }
 }
 
+int pop_1st_bit(Bitboard* bb) {
+  if (*bb == 0) return -1;
+  int index = __builtin_ctzll(*bb);
+  *bb &= (*bb - 1);
+  return index;
+}
 Bitboard shift(enum Direction D, Bitboard b) {
   return D == NORTH         ? b << 8
        : D == SOUTH         ? b >> 8
