@@ -4,7 +4,7 @@
 #include <string.h>
 
 #include "bitboard.h"
-#include "movegen.h"
+#include "attacks.h"
 
 const int CHAR_TO_PIECE[] = {
   ['P'] = WHITE_PAWN,   //
