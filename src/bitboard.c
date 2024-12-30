@@ -55,6 +55,13 @@ int main()
   initMagics();
   init_sliders_attacks(1);
   init_sliders_attacks(0);
+  init_leapers();
+
+  //Bitboard pawn_occ = 0ULL;
+  //set_bit(&pawn_occ, d3);
+  //set_bit(&pawn_occ, e4);
+  //print_bitboard(pawn_occ);
+  print_bitboard(PAWN_ATTACKS[white][a3]);
 
   // Bitboard bishop_occupancy = 0ULL;
   // set_bit(&bishop_occupancy, g7);
@@ -67,9 +74,10 @@ int main()
   // printf("\n     Bishop attacks\n");
   // print_bitboard(get_bishop_attacks(d4, bishop_occupancy));
 
-  Bitboard queen_occ = 0ULL;
-  set_bit(&queen_occ, d5);
-  print_bitboard(queen_occ);
-  print_bitboard(get_queen_attacks(d4, queen_occ));
+  //Bitboard queen_occ = 0ULL;
+  //set_bit(&queen_occ, d5);
+  //print_bitboard(queen_occ);
+  //print_bitboard(get_queen_attacks(d4, queen_occ));
+
   return 0;
 }

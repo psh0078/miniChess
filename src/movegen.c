@@ -81,6 +81,34 @@ void init_knight_attacks() {
   }
 }
 
+void init_pawn_attacks() {
+  for (Square sq = 0; sq < 64; sq++) {
+    PAWN_ATTACKS[white][sq] = pawnAttacks(sq, white);
+    PAWN_ATTACKS[black][sq] = pawnAttacks(sq, black);
+  }
+}
+
+Bitboard pawnAttacks(Square sq, int side) {
+  Bitboard attacks = 0ULL;
+  Bitboard bb = 0ULL;
+  set_bit(&bb, sq);
+
+  if (side == 0) { // white
+    attacks |= shift(NORTH_WEST, bb);
+    attacks |= shift(NORTH_EAST, bb);
+  } else { // black
+    attacks |= shift(SOUTH_WEST, bb);
+    attacks |= shift(SOUTH_EAST, bb);
+  }
+  return attacks;
+}
+
+void init_leapers() {
+  init_pawn_attacks();
+  init_king_attacks();
+  init_knight_attacks();
+}
+
 uint64_t xorshift64_state = 2304978537;
 
 uint64_t xorshift64() {
@@ -298,7 +326,7 @@ void init_sliders_attacks(int is_bishop) {
   }
 }
 
-void add_move(MoveList* moves, Square source, Bitboard board, Bitboard allies) {
+void make_move(MoveList* moves, Square source, Bitboard board, Bitboard allies) {
   clear_bit(&board, allies);
   while (board) {
     Square target = __builtin_ctzll(board);

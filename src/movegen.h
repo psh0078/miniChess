@@ -1,6 +1,7 @@
 #include "bitboard.h"
 #include <stdint.h>
 
+Bitboard PAWN_ATTACKS[2][64];
 Bitboard KING_ATTACKS[64];
 Bitboard KNIGHT_ATTACKS[64];
 
@@ -19,6 +20,9 @@ uint64_t rook_attacks[64][4096];
 // leapers
 void init_king_attacks();
 void init_knight_attacks();
+void init_pawn_moves();
+Bitboard pawnAttacks(Square sq, int side);
+void init_leapers();
 
 // sliders (magic)
 Bitboard rookMask(Square sq);
@@ -38,3 +42,5 @@ void init_sliders_attacks(int is_bishop);
 Bitboard get_bishop_attacks(Square sq, Bitboard occupancy);
 Bitboard get_rook_attacks(Square sq, Bitboard occupancy);
 Bitboard get_queen_attacks(Square sq, Bitboard occupancy);
+
+void make_move(MoveList* moves, Square source, Bitboard board, Bitboard allies);
