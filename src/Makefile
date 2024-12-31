@@ -1,6 +1,6 @@
 CC = gcc
 TARGET = bitboard
-SRC = bitboard.c movegen.c zobrist.c random.c
+SRC = bitboard.c movegen.c zobrist.c random.c attacks.c
 
 all: $(TARGET)
 

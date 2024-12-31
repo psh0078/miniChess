@@ -299,3 +299,4 @@ void init_sliders_attacks(int is_bishop) {
     }
   }
 }
+

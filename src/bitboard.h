@@ -57,6 +57,8 @@ typedef struct {
   Bitboard occupancies[3];
   Bitboard pieces[12];
 
+  Square squares[64];
+
   int castling;
   int enpassant;
 } Board;
@@ -84,15 +86,21 @@ enum {
   WHITE_QUEEN,
   BLACK_QUEEN,
   WHITE_KING,
-  BLACK_KING
+  BLACK_KING,
+  NO_PIECE
 };
 
+extern const char* PIECE_TO_CHAR;
 extern const int CHAR_TO_PIECE[]; 
+
 
 bool get_bit(Bitboard bitboard, int square);
 void set_bit(Bitboard* bitboard, int square);
 void clear_bit(Bitboard* bitboard, int square);
 int pop_1st_bit(Bitboard* bb);
 Bitboard shift(enum Direction D, Bitboard b);
+void clear_board(Board* board);
+void print_bitboard(Bitboard bitboard);
+void print_board(Board* board);
 
 #endif

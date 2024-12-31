@@ -6,6 +6,7 @@
 #include "bitboard.h"
 #include "attacks.h"
 
+const char* PIECE_TO_CHAR = "PpNnBbRrQqKk";
 const int CHAR_TO_PIECE[] = {
   ['P'] = WHITE_PAWN,   //
   ['N'] = WHITE_KNIGHT, //
@@ -53,6 +54,19 @@ Bitboard shift(enum Direction D, Bitboard b) {
        : 0;
 }
 
+void clear_board(Board* board) {
+  memset(board->pieces, 0, sizeof(board->pieces));
+  memset(board->occupancies, 0, sizeof(board->occupancies));
+  
+  for (int i = 0; i < 64; i++)
+    board->squares[i] = NO_PIECE;
+  
+  board->stm       = white;
+  board->xstm      = black;
+  board->enpassant = 0;
+  board->castling  = 0;
+}
+
 void print_bitboard(Bitboard bitboard)
 {
   printf("\n");
@@ -68,16 +82,39 @@ void print_bitboard(Bitboard bitboard)
   printf("Bitboard: %llud\n\n", bitboard);
 }
 
-int main()
-{
+void print_board(Board* board) {
+  for (int r = 0; r < 8; r++) {
+    printf("+-------+-------+-------+-------+-------+-------+-------+-------+\n");
+    printf("|");
+    for (int f = 0; f < 16; f++) {
+      if (f == 8)
+        printf("\n|");
+
+      int sq = r * 8 + (f > 7 ? f - 8 : f);
+
+      if (f < 8) {
+        if (board->squares[sq] == NO_PIECE)
+          printf("       |");
+        else
+          printf("   %c   |", PIECE_TO_CHAR[board->squares[sq]]);
+      } else {
+        printf("       |");
+      }
+    }
+    printf("\n");
+  }
+  printf("+-------+-------+-------+-------+-------+-------+-------+-------+\n");
+}
+
+int main() {
   printf("Bitboard board\n");
   Board board;
-  memset(&board, 0, sizeof(Board));
+  clear_board(&board);
   initMagics();
   init_sliders_attacks(1);
   init_sliders_attacks(0);
   init_leapers_attacks();
-
+  print_board(&board);
   //Bitboard pawn_occ = 0ULL;
   //set_bit(&pawn_occ, d3);
   //set_bit(&pawn_occ, e4);
