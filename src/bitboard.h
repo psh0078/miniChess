@@ -51,8 +51,7 @@ typedef uint64_t Bitboard;
 typedef uint8_t Square;
 
 typedef struct {
-  int stm;
-  int xstm;
+  int side;
   Bitboard bitboards[12];
   Bitboard occupancies[3];
   Bitboard pieces[12];
@@ -102,5 +101,6 @@ Bitboard shift(enum Direction D, Bitboard b);
 void clear_board(Board* board);
 void print_bitboard(Bitboard bitboard);
 void print_board(Board* board);
+void parse_fen(char* fen, Board* board);
 
 #endif

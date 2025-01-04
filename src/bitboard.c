@@ -106,6 +106,29 @@ void print_board(Board* board) {
   printf("+-------+-------+-------+-------+-------+-------+-------+-------+\n");
 }
 
+void parse_fen(char* fen, Board* board) {
+  clear_board(board);
+  for (int i = 0; i < 64; i++) {
+    if ((*fen >= 'a' && *fen <= 'z') || (*fen >= 'A' && *fen <= 'Z')) {
+      int piece = CHAR_TO_PIECE[(int) *fen];
+      set_bit(&board->pieces[piece], i);
+      board->squares[i] = piece;
+      fen++;
+    }
+    if (*fen >= '0' && *fen <= '9') {
+      int offset = *fen - '1';
+      i += offset
+    } else if (*fen == '/') {
+      i--;
+    }
+
+    fen++;
+  }
+  fen ++;
+
+  board->side = (*fen++ == 'w' ? white : black);
+}
+
 int main() {
   printf("Bitboard board\n");
   Board board;
@@ -115,6 +138,7 @@ int main() {
   init_sliders_attacks(0);
   init_leapers_attacks();
   print_board(&board);
+
   //Bitboard pawn_occ = 0ULL;
   //set_bit(&pawn_occ, d3);
   //set_bit(&pawn_occ, e4);
@@ -124,7 +148,7 @@ int main() {
   // Bitboard bishop_occupancy = 0ULL;
   // set_bit(&bishop_occupancy, g7);
   // set_bit(&bishop_occupancy, f6);
-  // set_bit(&bishop_occupancy, c5);
+  // set_bit(&bishop_occupancy, c5); 
   // set_bit(&bishop_occupancy, b2);
   // set_bit(&bishop_occupancy, g1);
   // printf("\n     Bishop occupancy\n");
