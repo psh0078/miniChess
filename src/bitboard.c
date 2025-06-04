@@ -117,7 +117,7 @@ void parse_fen(char* fen, Board* board) {
     }
     if (*fen >= '0' && *fen <= '9') {
       int offset = *fen - '1';
-      i += offset
+      i += offset;
     } else if (*fen == '/') {
       i--;
     }
